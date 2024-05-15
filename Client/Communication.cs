@@ -11,15 +11,15 @@ namespace Client
 {
     public class Communication
     {
-        TcpClient client;
-        NetworkStream stream;
-        BinaryFormatter formatter;
+        private TcpClient client;
+        private NetworkStream stream;
+        private BinaryFormatter formatter;
 
         public bool ConnectToServer()
         {
             try
             {
-                client = new TcpClient("127.0.0.1", 5555);
+                client = new TcpClient("127.0.0.1", 5556);
                 stream = client.GetStream();
                 formatter = new BinaryFormatter();
                 return true;
@@ -34,6 +34,17 @@ namespace Client
             DTO transfer = new DTO();
             transfer.Operation = Operations.End;
             formatter.Serialize(stream, transfer);
+        }
+        public List<Country> GetAllCountries()
+        {
+            // Request
+            DTO transfer=new DTO();
+            transfer.Operation = Operations.GetAllCountries;
+            formatter.Serialize(stream,transfer);
+
+            // Response
+            transfer=formatter.Deserialize(stream) as DTO;
+            return transfer.Result as List<Country>;
         }
     }
 }

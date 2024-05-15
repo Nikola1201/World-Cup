@@ -18,11 +18,11 @@ namespace Server
             try
             {
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, 5555);
+                IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, 5556);
                 socket.Bind(endPoint);
 
                 ThreadStart threadStart = Listen;
-                new Thread(threadStart);
+                new Thread(threadStart).Start();
 
                 return true;
             }

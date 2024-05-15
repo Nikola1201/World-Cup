@@ -11,5 +11,7 @@ namespace Domain
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public Country Object { get => this; }
+
     }
 }

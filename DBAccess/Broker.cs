@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace DBAccess
 
         public Broker()
         {
-            connection = new SqlConnection(@"");
+            connection = new SqlConnection(@"Data Source=desktop-u6itn59\sqlexpress;Initial Catalog=WorldCup;Integrated Security=True;TrustServerCertificate=True");
             command = connection.CreateCommand();
         }
         // Singleton pattern
@@ -26,6 +27,31 @@ namespace DBAccess
         {
             if (instance == null) instance = new Broker();
             return instance;
+        }
+
+        public List<Country> GetAllCountries()
+        {
+            List<Country> countries = new List<Country>();
+            try
+            {
+                connection.Open();
+                command.CommandText = "Select * FROM Country";
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read()) {
+                    Country c = new Country();
+                    c.Id = Convert.ToInt32(reader["ID"]);
+                    c.Name = Convert.ToString(reader["Name"]);
+                    countries.Add(c);
+                }
+                reader.Close();
+                return countries;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally { if (connection != null) connection.Close(); }
         }
     }
 }
