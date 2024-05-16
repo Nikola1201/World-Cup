@@ -35,8 +35,19 @@ namespace Server
                     DTO transfer = formatter.Deserialize(stream) as DTO;
                     switch (transfer.Operation)
                     {
+                        
                         case Operations.GetAllCountries:
                             transfer.Result = Broker.Instance().GetAllCountries();
+                            formatter.Serialize(stream, transfer);
+                            break;
+                        case Operations.SavePairs:
+                            transfer.Result = Broker.Instance().SavePairs
+                                (transfer.TransferObject as List<Pair>);
+                            formatter.Serialize(stream, transfer);
+                            break;
+                        case Operations.ExistingSchedule:
+                            transfer.Result = Broker.Instance().ExistingSchedule
+                                (transfer.TransferObject as List<Pair>);
                             formatter.Serialize(stream, transfer);
                             break;
 

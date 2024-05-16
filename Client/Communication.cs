@@ -38,13 +38,39 @@ namespace Client
         public List<Country> GetAllCountries()
         {
             // Request
-            DTO transfer=new DTO();
+            DTO transfer = new DTO();
             transfer.Operation = Operations.GetAllCountries;
-            formatter.Serialize(stream,transfer);
+            formatter.Serialize(stream, transfer);
 
             // Response
-            transfer=formatter.Deserialize(stream) as DTO;
+            transfer = formatter.Deserialize(stream) as DTO;
             return transfer.Result as List<Country>;
+        }
+        public bool SavePairs(List<Pair> pairs)
+        {
+            // Request
+            DTO transfer = new DTO();
+            transfer.Operation = Operations.SavePairs;
+            transfer.TransferObject = pairs;
+            formatter.Serialize(stream, transfer);
+
+            //Response
+
+            transfer = formatter.Deserialize(stream) as DTO;
+            return (bool)transfer.Result;
+        }
+        public bool ExistingSchedule(List<Pair>pairs)
+        {
+            // Request
+            DTO transfer = new DTO();
+            transfer.Operation = Operations.ExistingSchedule;
+            transfer.TransferObject = pairs;
+            formatter.Serialize(stream, transfer);
+
+            //Response
+
+            transfer = formatter.Deserialize(stream) as DTO;
+            return (bool)transfer.Result;
         }
     }
 }

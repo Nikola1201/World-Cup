@@ -53,7 +53,7 @@ namespace Client
             awayTeam.DataPropertyName = "AwayTeam";
             awayTeam.DataSource = comm.GetAllCountries();
             awayTeam.ValueMember = "Object";
-            awayTeam.DisplayMember="Name";
+            awayTeam.DisplayMember = "Name";
 
             dataGridView1.Columns.Add(homeTeam);
             dataGridView1.Columns.Add(awayTeam);
@@ -65,7 +65,18 @@ namespace Client
         }
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            pairs.Add(new Pair());
+            Pair p = new Pair();
+            try
+            {
+
+                p.Date = Convert.ToDateTime(txtDate.Text.Trim());
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Please enter a valid date!");
+                return;
+            }
+            pairs.Add(p);
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -78,6 +89,50 @@ namespace Client
             catch (Exception)
             {
                 MessageBox.Show("Please select a pair!");
+            }
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            if (comm.ExistingSchedule(new List<Pair>(pairs)))
+            {
+                MessageBox.Show("Date already scheduled!\nSchedule another date!");
+                txtDate.Clear();
+                pairs.Clear();
+                return;
+            }
+            else
+            {
+                foreach (Pair pair in pairs)
+                {
+                    foreach (Pair pair1 in pairs)
+                    {
+                        if (pair.HomeTeam.Id == pair.AwayTeam.Id)
+                        {
+                            MessageBox.Show("A country can't play against itself!");
+                            txtDate.Clear();
+                            pairs.Clear();
+                            return;
+                        }
+                        if (pair.HomeTeam.Id == pair1.HomeTeam.Id || pair.HomeTeam.Id == pair1.AwayTeam.Id
+                            || pair.AwayTeam.Id == pair1.HomeTeam.Id || pair.AwayTeam.Id == pair1.AwayTeam.Id)
+                        {
+                            MessageBox.Show("A country can only play once on a single day!");
+                            txtDate.Clear();
+                            pairs.Clear();
+                            return;
+                        }
+                    }
+                }
+
+                if (comm.SavePairs(new List<Pair>(pairs)))
+                {
+                    MessageBox.Show("Schedule saved successfully!");
+                }
+                else
+                {
+                    MessageBox.Show("Error!");
+                }
             }
         }
     }
