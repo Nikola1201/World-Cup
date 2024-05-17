@@ -103,25 +103,22 @@ namespace Client
             }
             else
             {
+                HashSet<int> ids = new HashSet<int>();
+
                 foreach (Pair pair in pairs)
                 {
-                    foreach (Pair pair1 in pairs)
+                    if (pair.HomeTeam.Id == pair.AwayTeam.Id)
                     {
-                        if (pair.HomeTeam.Id == pair.AwayTeam.Id)
-                        {
-                            MessageBox.Show("A country can't play against itself!");
-                            txtDate.Clear();
-                            pairs.Clear();
-                            return;
-                        }
-                        if (pair.HomeTeam.Id == pair1.HomeTeam.Id || pair.HomeTeam.Id == pair1.AwayTeam.Id
-                            || pair.AwayTeam.Id == pair1.HomeTeam.Id || pair.AwayTeam.Id == pair1.AwayTeam.Id)
-                        {
-                            MessageBox.Show("A country can only play once on a single day!");
-                            txtDate.Clear();
-                            pairs.Clear();
-                            return;
-                        }
+                        MessageBox.Show("A country can't play against itself!");
+
+                    }
+
+                    if (!ids.Add(pair.HomeTeam.Id) || !ids.Add(pair.AwayTeam.Id))
+                    {
+                        MessageBox.Show("A country can only play once a day");
+                        txtDate.Clear();
+                        pairs.Clear();
+                        return;
                     }
                 }
 

@@ -37,7 +37,8 @@ namespace DBAccess
                 connection.Open();
                 command.CommandText = "Select * FROM Country";
                 SqlDataReader reader = command.ExecuteReader();
-                while (reader.Read()) {
+                while (reader.Read())
+                {
                     Country c = new Country();
                     c.Id = Convert.ToInt32(reader["ID"]);
                     c.Name = Convert.ToString(reader["Name"]);
@@ -62,7 +63,7 @@ namespace DBAccess
                 try
                 {
                     int id = Convert.ToInt32(command.ExecuteScalar());
-                    return id+1;
+                    return id + 1;
                 }
                 catch (Exception)
                 {
@@ -76,9 +77,9 @@ namespace DBAccess
                 throw;
             }
         }
-        public bool ExistingSchedule(List<Pair>pairs)
+        public bool ExistingSchedule(List<Pair> pairs)
         {
-          
+
             Pair p = pairs[0];
             try
             {
@@ -103,7 +104,7 @@ namespace DBAccess
 
                     throw;
                 }
-                    }
+            }
             catch (Exception)
             {
 
@@ -118,19 +119,19 @@ namespace DBAccess
                 connection.Open();
                 transaction = connection.BeginTransaction();
                 command = new SqlCommand("", connection, transaction);
-                
-                foreach(Pair p in pairs)
+
+                foreach (Pair p in pairs)
                 {
-                    p.Id=GetPairId();
-                    command.CommandText ="INSERT INTO Pair VALUES "+"(@id,@homeTeam,@awayTeam,@date)";
+                    p.Id = GetPairId();
+                    command.CommandText = "INSERT INTO Pair VALUES " + "(@id,@homeTeam,@awayTeam,@date)";
                     command.Parameters.AddWithValue("@id", p.Id);
                     command.Parameters.AddWithValue("@homeTeam", p.HomeTeam.Id);
                     command.Parameters.AddWithValue("@awayTeam", p.AwayTeam.Id);
                     command.Parameters.AddWithValue("@date", p.Date.ToString("yyyy-MM-dd"));
-                    
+
                     command.ExecuteNonQuery();
                     command.Parameters.Clear();
-           
+
                 }
                 transaction.Commit();
                 return true;
@@ -144,6 +145,33 @@ namespace DBAccess
             {
                 connection.Close();
             }
+        }
+        public List<ServerClass> GetAllPairs(string parameter)
+        {
+            List<ServerClass> pairs = new List<ServerClass>();
+            try
+            {
+                connection.Open();
+                command.CommandText = "SELECT h.name as HomeTeam,a.name as AwayTeam,p.date as Date\r\nFROM Pair p\r\nJOIN Country h ON p.HomeTeam=h.ID\r\nJOIN Country a ON p.AwayTeam=a.ID "
+                    + parameter;
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    ServerClass p = new ServerClass();
+                    p.HomeTeam = Convert.ToString(reader["HomeTeam"]);
+                    p.AwayTeam = Convert.ToString(reader["AwayTeam"]);
+                    p.Date = Convert.ToDateTime(reader["Date"]);
+                    pairs.Add(p);
+                }
+                reader.Close();
+                return pairs;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally { if (connection != null) connection.Close(); }
         }
     }
 }

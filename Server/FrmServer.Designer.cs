@@ -45,6 +45,7 @@
             this.cbDateFilter.TabIndex = 1;
             this.cbDateFilter.Text = "Filter by date";
             this.cbDateFilter.UseVisualStyleBackColor = true;
+            this.cbDateFilter.CheckedChanged += new System.EventHandler(this.cbDateFilter_CheckedChanged);
             // 
             // label1
             // 
@@ -67,10 +68,14 @@
             // 
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Enabled = false;
             this.dataGridView1.Location = new System.Drawing.Point(12, 61);
+            this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
             this.dataGridView1.Size = new System.Drawing.Size(516, 171);
             this.dataGridView1.TabIndex = 4;
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // FrmServer
             // 
